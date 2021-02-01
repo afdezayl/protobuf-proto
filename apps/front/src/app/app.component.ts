@@ -17,9 +17,13 @@ export class AppComponent {
     this.service.getHello().subscribe((m) => console.log(m.text));
   }
 
+  sendHello() {
+    this.service.sendHello().subscribe();
+  }
+
   sendMultipleHello() {
     console.time('totalTime');
-    forkJoin(Array(100).fill(this.service.getHello()))
+    forkJoin(Array(100).fill(this.service.sendHello()))
       .pipe()
       .subscribe((_) => console.timeEnd('totalTime'));
   }

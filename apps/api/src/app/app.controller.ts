@@ -22,11 +22,7 @@ export class AppController {
 
   @Post('echo')
   echo(@Body() body: Buffer, @Res() response: Response) {
-    // Extract logic
-    const obj = JSON.parse(body.toString());
-    const values: Array<number> = Object.values(obj);
-    const encoded = Uint8Array.from(values);
-    const message = CustomMessage.decode(encoded);
+    const message = CustomMessage.decode(body);
 
     message.text += ' from server';
 

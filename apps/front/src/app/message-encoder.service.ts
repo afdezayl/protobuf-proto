@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CustomMessage } from '@protobuf-proto/shared/proto';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const arraybufferTypeOption: object = {
@@ -37,8 +37,14 @@ export class MessageEncoderService {
     const message = new CustomMessage({ text: 'hellooo' });
     const encoded = CustomMessage.encode(message).finish();
 
+    // httpClient doesn't convert to string arraybuffer or blob. Limit size to avoid decode errors and big payload.
+    const arraybuffer = encoded.buffer.slice(
+      encoded.byteOffset,
+      encoded.byteOffset + encoded.length
+    );
+
     return this.http
-      .post<ArrayBuffer>('/api/echo', encoded, {
+      .post<ArrayBuffer>('/api/echo', arraybuffer, {
         ...arraybufferTypeOption,
         headers: arraybufferHeader(encoded.byteLength),
       })
