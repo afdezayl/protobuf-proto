@@ -1,11 +1,25 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CustomMessage } from '@protobuf-proto/shared/proto';
+import { Message } from 'protobufjs';
 import { map } from 'rxjs/operators';
+
+export class HttpResponseType {
+  static readonly JSON = 'json';
+  static readonly ArrayBuffer = 'arraybuffer' as 'json';
+  static readonly Blob = 'blob' as 'json';
+  static readonly Text = 'text' as 'json';
+}
+
+export class HttpObserve {
+  static readonly Body = 'body';
+  static readonly Events = 'events' as 'body';
+  static readonly Response = 'response' as 'body';
+}
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const arraybufferTypeOption: object = {
-  responseType: 'arraybuffer',
+  responseType: HttpResponseType.ArrayBuffer,
 };
 
 const arraybufferHeader = (length) => {
@@ -34,33 +48,29 @@ export class MessageEncoderService {
   }
 
   sendHello() {
-    const message = new CustomMessage({ text: 'hellooo' });
-    const encoded = CustomMessage.encode(message).finish();
-
-    // httpClient doesn't convert to string arraybuffer or blob. Limit size to avoid decode errors and big payload.
-    const arraybuffer = encoded.buffer.slice(
-      encoded.byteOffset,
-      encoded.byteOffset + encoded.length
-    );
+    const message = new CustomMessage({ text: 'hello world' });
+    const encoded = this._encode(message);
 
     return this.http
-      .post<ArrayBuffer>('/api/echo', arraybuffer, {
+      .post<ArrayBuffer>('/api/echo', encoded, {
         ...arraybufferTypeOption,
         headers: arraybufferHeader(encoded.byteLength),
       })
       .pipe(map((x) => CustomMessage.decode(new Uint8Array(x))));
   }
-}
 
-export class HttpResponseType {
-  static JSON = 'json';
-  static ArrayBuffer = 'arraybuffer' as 'json';
-  static Blob = 'blob' as const;
-  static Text = 'text' as const;
-}
+  /**
+   *
+   * @param obj A protobuf message
+   */
+  private _encode<T extends Message<T>>(obj: T): ArrayBuffer {
+    const type = obj.$type;
+    const encoded = type.encode(obj).finish();
 
-export class HttpObserve {
-  Body: 'body' = 'body' as const;
-  Events: 'events' = 'events' as const;
-  Response: 'response' = 'response' as const;
+    // httpClient doesn't convert to string arraybuffer or blob. Limit size to avoid decode errors and big payload.
+    return encoded.buffer.slice(
+      encoded.byteOffset,
+      encoded.byteOffset + encoded.length
+    );
+  }
 }
