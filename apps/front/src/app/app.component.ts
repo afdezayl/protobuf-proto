@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import { Component } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { MessageEncoderService } from './message-encoder.service';
+import { MessageSenderService } from './message-encoder.service';
 
 @Component({
   selector: 'protobuf-proto-root',
@@ -11,7 +11,7 @@ import { MessageEncoderService } from './message-encoder.service';
 export class AppComponent {
   hello$ = this.service.sendHello();
 
-  constructor(private service: MessageEncoderService) {}
+  constructor(private service: MessageSenderService) {}
 
   getHello() {
     this.service.getHello().subscribe((m) => console.log(m.text));
