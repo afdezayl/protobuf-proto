@@ -13,9 +13,9 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@protobuf-proto/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@protobuf-proto/shared/proto": ["libs/shared/proto/src/index.ts"]
     }
   },
