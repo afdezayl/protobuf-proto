@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CustomMessage } from '@protobuf-proto/shared/proto';
-import { Message } from 'protobufjs';
-import { map, tap } from 'rxjs/operators';
 import { ProtobufHttpClientService } from './protobuf-http-client.service';
 
 @Injectable({

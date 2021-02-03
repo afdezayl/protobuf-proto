@@ -24,8 +24,7 @@ export class ProtobufHttpClientService {
   private arraybufferHeader = new HttpHeaders({
     'Content-type': 'application/octet-stream',
   });
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  private arraybufferTypeOption: object = {
+  private arraybufferTypeOption = {
     responseType: HttpResponseType.ArrayBuffer,
   };
 
